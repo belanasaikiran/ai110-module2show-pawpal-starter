@@ -2,7 +2,7 @@
 
 ## 1. System Design
 
-3 cpre actions a user should be able to perform in the app are:
+3 core actions a user should be able to perform in the app are:
 - add/manage pet and owner information
 - add/edit pet care tasks (including duration and priority)
 - generate and view a daily schedule/plan based on the entered information and constraints
@@ -114,13 +114,24 @@ Refer the file `uml.mermaid` for the mermaid diagram.
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 
+- I used AI to designing and brainstorming when I was trying to figure out how to structure the Scheduler and DailyPlan classes. I asked suggestions on how to organize the scheduling logic and what attributes the DailyPlan should have.
+
+
 - What kinds of prompts or questions were most helpful?
 
+- "How should I structure the Scheduler class to build a daily plan based on owner, pet, and tasks?"
+- "Generating a UML diagram for the app that includes Owner, Pet, Task, Scheduler, and DailyPlan classes with their attributes and methods." and "Explain the links"
+- "Why a specific algorithm optmization would be better than a greedy approach for the scheduling problem?"
 
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
+
+  - It assumed something else and re-wrote the entire README. I had to stop it and had to take over in correcting the README.
+
 - How did you evaluate or verify what the AI suggested?
+
+  I read the README file and check what the AI has written for professional grade. It removed most the things that was suggested to be included in earlier phases.
 
 ---
 
@@ -129,12 +140,25 @@ Refer the file `uml.mermaid` for the mermaid diagram.
 **a. What you tested**
 
 - What behaviors did you test?
+
+ - Sorting correctness
+ - Recurrence Logic
+ - Edge cases such as pet with no taskks, owner with no pets, tasks that exceed the time budget, etc.
+
 - Why were these tests important?
+
+    - Sorting correctness ensures that the tasks are ordered properly by priority and time, which is fundamental to the scheduling logic.
+    - Recurrence logic tests verify that daily and weekly tasks are rescheduled correctly after completion, which is key for ongoing pet care.
+    - Edge cases test the robustness of the system and ensure it can handle real-world scenarios without crashing or producing nonsensical plans.
 
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
+ 99%
+
 - What edge cases would you test next if you had more time?
+
+Add more people and add specific times
 
 ---
 
@@ -143,11 +167,16 @@ Refer the file `uml.mermaid` for the mermaid diagram.
 **a. What went well**
 
 - What part of this project are you most satisfied with?
+  - I'm most satisfied with the overall scheduling logic and how well it takes into account various constraints and priorities. 
 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
 
+    - I would implement a more better scheduling algorithm that considers more combinations of tasks rather than just a greedy first-fit approach. This would allow for better optimization of the owner's time and potentially include more high-priority tasks in the plan.
+
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+    - I learned while AI can be a powerful tool for brainstorming and generating ideas, it's crucial to maintain my judgment and sight of the project. Not all AI suggestions will be accurate, and it's important to evaluate them and make  decisions about what to accept or reject.

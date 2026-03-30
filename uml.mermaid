@@ -3,14 +3,23 @@ classDiagram
         +str name
         +int available_minutes
         +dict preferences
+        -list~Pet~ _pets
         +get_available_time() int
+        +add_pet(pet)
+        +get_pets() list~Pet~
+        +get_all_tasks() list~Task~
+        +filter_tasks(completed, pet_name) list~Task~
     }
 
     class Pet {
         +str name
         +str species
         +Owner owner
+        -list~Task~ _tasks
         +get_tasks() list~Task~
+        +get_tasks_by_status(completed) list~Task~
+        +add_task(task)
+        +complete_task(task) Task
     }
 
     class Task {
@@ -18,30 +27,42 @@ classDiagram
         +int duration_minutes
         +str priority
         +str category
+        +str frequency
+        +str preferred_time
+        +str scheduled_time
         +bool completed
+        +str last_completed_date
+        +str due_date
         +is_feasible(available_minutes) bool
+        +mark_complete(on_date)
+        +as_next_occurrence() Task
+        +is_due_today(today) bool
     }
 
     class Scheduler {
         +Owner owner
-        +Pet pet
-        +list~Task~ tasks
-        +build_plan() DailyPlan
+        +build_plan(pet_filter, today) DailyPlan
+        +complete_task(pet, task) Task
         +explain_plan() list~str~
+        -_get_candidates(pet_filter, today) list
+        -_sort_candidates(candidates) list
+        -_detect_conflicts(scheduled) list~str~
+        -_detect_time_conflicts(scheduled_pairs) list~str~
     }
 
     class DailyPlan {
         +list~Task~ scheduled_tasks
         +list~Task~ skipped_tasks
+        +list~str~ conflicts
         +int total_duration
         +list~str~ explanations
         +summary() str
     }
 
-    Owner "1" --> "0..*" Pet : owns
-    Pet "1" --> "0..*" Task : has
+    Owner "1" *-- "0..*" Pet : owns
+    Pet "1" *-- "0..*" Task : has
+    Pet ..> Task : complete_task() creates
+    Task ..> Task : as_next_occurrence() creates
     Scheduler --> Owner : uses
-    Scheduler --> Pet : plans for
-    Scheduler --> "0..*" Task : selects from
     Scheduler ..> DailyPlan : produces
-    DailyPlan o-- Task : includes / skips
+    DailyPlan o-- Task : scheduled / skipped

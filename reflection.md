@@ -11,7 +11,46 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+
+Refer the file `uml.mermaid` for the mermaid diagram.
+
+`Owner` class represents the pet owner, with attributes for their name, available time, and preferences. It has a method to calculate available time for tasks.
+
+`Pet` is a data class for the pet being cared for. It has attibutes name, species, and a back reference to its owner. It has a method to get the list of tasks associated with the pet.
+
+`Task` is a single care activity with title, duration, priority, category, and completion status. It has a method (`is_feasible()`) to check if it can fit within the remaining time. 
+
+`Scheduler` is responsible for taking the owner, pet, and list of tasks and building a daily plan. It has methods to build the plan and explain the reasoning behind it.
+- `buiild_plan()` is the core scheduling logic that selects and orders tasks based on constraints and priorities. 
+- `explain_plan()` provides reasoning for why certain tasks were included or skipped.
+
+`DailyPlan` is a data class that holds the scheduled tasks, skipped tasks, total duration, and explanations. It has a method to format the plan for display in the UI.
+
+
+
 - What classes did you include, and what responsibilities did you assign to each?
+
+- `Owner` 
+    - **Responsibilities**:
+        - Store owner information (name, available time, preferences)
+        - Calculate available time for tasks
+- `Pet`
+    - **Responsibilities**:
+        - Store pet information (name, species, owner)
+        - Provide access to assigned tasks
+- `Task`
+    - **Responsibilities**:
+        - Store task details (title, duration, priority, category, completion status)
+        - Determine if the task is feasible in given available time
+- `Scheduler`
+    - **Responsibilities**:
+        - Build a daily plan based on the owner, pet, and tasks
+        - Give reasoning behind the generated plan
+- `DailyPlan`
+    - **Responsibilities**:
+        - Store the results of the scheduling (scheduled tasks, skipped tasks, total duration, explanations)
+        - Format the plan for display in the UI
+
 
 **b. Design changes**
 

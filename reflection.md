@@ -2,6 +2,12 @@
 
 ## 1. System Design
 
+3 cpre actions a user should be able to perform in the app are:
+- add/manage pet and owner information
+- add/edit pet care tasks (including duration and priority)
+- generate and view a daily schedule/plan based on the entered information and constraints
+
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.

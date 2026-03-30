@@ -55,7 +55,15 @@ Refer the file `uml.mermaid` for the mermaid diagram.
 **b. Design changes**
 
 - Did your design change during implementation?
+    Yes
 - If yes, describe at least one change and why you made it.
+    backward looking -> forward looking recurrence
+
+    - In Original design, the Scheduler would work on one pet's task list, passed in manually from outside. That made the caller responsible for gathering and passing the right tasks every time.
+    
+
+    When implementing `build_plan()`, it became clear the Scheduler should be responsible for collecting tasks itself across all pets by walking owner -> get_pets() -> get_tasks(). Passing pet and tasks in as constructor arguments.
+
 
 ---
 
@@ -64,12 +72,39 @@ Refer the file `uml.mermaid` for the mermaid diagram.
 **a. Constraints and priorities**
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
+
+    - Time budget - Hard Constraint
+    - Priority + Category - Orddering constraint
+    - conflcts and detection of it - Soft constraint (explanation, not strictly enforced)
+
 - How did you decide which constraints mattered most?
+
+    - Time Budget - Without it the plan is meaningless . you can't schedule 4 hours of tasks into a 90-minute morning. It had to be a hard block.
+
+    - Priority + Category - TThese made the greedy algorithm produce reasonable results without extra complexity. Meds before feeding is a real pet-health concern, not just a preference.
+
+    - Conflict detection - Intentionally kept as warnings, not blockers. Crashing or refusing to build a plan because two tasks overlap is worse for a user than just being told about it.
 
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+
+    **Greedy first-fit schedyuling**: build_plan() sorts tasks once by priority/time and then walks down the list. the first task that fits the remaining budget is locked in immediately. No task is ever reconsidered.
+
+
 - Why is that tradeoff reasonable for this scenario?
+
+    Greedy gives you A + C (one high, one medium).
+
+    ```
+    budget = 60 min
+
+    Task A  — 40 min, high priority    ← greedy picks this
+    Task B  — 35 min, high priority    ← needs 35, only 20 left → skipped
+    Task C  — 20 min, medium priority  ← fits the gap → scheduled
+    ```
+    
+    A smarter approach would notice that skipping A lets you fit B + C (two tasks in nearly the same time), or that neither combination is clearly better and the owner should be asked.
 
 ---
 

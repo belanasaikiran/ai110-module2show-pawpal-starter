@@ -41,3 +41,38 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling
+
+The scheduler goes beyond a simple priority sort. Here is what was added and why.
+
+### Multi-tier task sorting
+Tasks are sorted across three tiers before any are placed into the plan:
+1. **Time-slot alignment** — tasks whose `preferred_time` matches the owner's `time_of_day` preference go first.
+2. **Priority** — `high` before `medium` before `low`.
+3. **Category order** — `meds → feeding → walk → grooming → enrichment`, so medically important tasks always precede meals and exercise.
+
+### Clock-time sorting
+Every task can carry an optional `scheduled_time` in `"HH:MM"` format. `sort_by_time()` converts each string to total minutes since midnight with a lambda key and returns a new list ordered by actual clock time, with un-timed tasks placed at the end.
+
+### Filtering by pet or status
+`Owner.filter_tasks(completed, pet_name)` returns only the tasks that match every supplied filter (filters are AND-ed). Useful for showing a single pet's pending tasks or checking what has already been completed.
+
+### Recurring task logic with `timedelta`
+When a recurring task is marked complete, `Pet.complete_task()` automatically appends a fresh next occurrence with a computed `due_date`:
+- `"daily"` tasks: `due_date = completed_on + timedelta(days=1)`
+- `"weekly"` tasks: `due_date = completed_on + timedelta(days=7)`
+- `"as_needed"` tasks: no next occurrence is created.
+
+`Task.is_due_today()` then compares `due_date` against today — a single date comparison instead of counting elapsed days.
+
+### Conflict detection
+After the greedy pass, two checks run on the final scheduled list:
+
+| Check | What it catches |
+|---|---|
+| Back-to-back | Two consecutive tasks share a category that should not repeat without a break (e.g. `walk → walk`). |
+| Ordering violation | A category that must precede another appears later (e.g. `feeding` before `meds`). |
+| Time-window overlap | Two tasks with `scheduled_time` set have overlapping intervals, detected with the standard `start_A < end_B AND start_B < end_A` test. |
+
+All conflicts are returned as warning strings — the plan is never blocked or discarded.

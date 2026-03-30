@@ -76,3 +76,24 @@ After the greedy pass, two checks run on the final scheduled list:
 | Time-window overlap | Two tasks with `scheduled_time` set have overlapping intervals, detected with the standard `start_A < end_B AND start_B < end_A` test. |
 
 All conflicts are returned as warning strings — the plan is never blocked or discarded.
+
+
+## Testing PawPal+
+
+Run the tests with:
+
+```bash
+python -m pytest
+```
+
+Confidence Level: 5
+
+### Test classes
+
+| Class	| Tests	| Covers
+| --- | --- | ---
+| TestSortByTime	| 5	| Chronological order, unscheduled tasks last, no-crash with all-None times, stable sort at equal times, immutability
+| TestRecurrenceLogic	| 8	| Daily → +1 day, weekly → +7 days, next occurrence starts incomplete, complete_task appends to pet, as_needed returns None, is_due_today for today/tomorrow/None
+| TestConflictDetection	| 6	| Exact same time flagged, overlapping windows flagged, non-overlapping clean, back-to-back walk, feeding-before-meds ordering, conflicts don't block the plan
+| TestEdgeCases	| 7	| Pet with no tasks, owner with no pets, task fits exactly in budget, all tasks skipped, get_tasks returns a copy, pet_filter isolates one pet, high priority sorts before low
+| Add/Mark Complete test cases | 2 | Adding a task to a pet, marking a task complete and checking next occurrence
